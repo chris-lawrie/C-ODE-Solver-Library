@@ -1,9 +1,7 @@
 // Header file for the AdamsBashforth2 method. 
-// Change to full name! 
 
 #ifndef AdamsBashforth2_H_
 #define AdamsBashforth2_H_
-
 
 #include "integrator.h"
 
@@ -13,9 +11,11 @@ class AdamsBashforth2 : public Integrator
 {
 public:
   AdamsBashforth2(double dt, const Model &model); // constructor
-  ~AdamsBashforth2();				// destructor
+  ~AdamsBashforth2();				                      // destructor
 
+  int run_RK4(double t, double *x);
   int Step(double t, double *x);
+
   
 private:
   const double dt_; 		  // timestep
@@ -23,7 +23,7 @@ private:
   const int dimen_;		    // dimension of state x
 
   double *fx_;			// will point to temporary scratch
-				// space to hold f(x,t)
+  double *fx_old;   // will point to temporary scratch
 };
 
 #endif  // AdamsBashforth2
