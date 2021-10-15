@@ -1,7 +1,7 @@
 // General driver code for a given choice of ODE (eg. ddo, LV2)
 // and a given choice of solver (Euler, ddo, ab2)
 
-// Include some Standard Library things
+// Include some Standard Library packages
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -9,23 +9,22 @@
 using namespace std;
 
 // Include the models header files
-#include "model.h"
+#include "model.h"  // This is the parent for ddo.h and lv.h
 #include "ddo.h"
 #include "lv.h"
 
 // Include the solver header files
-#include "integrator.h"
+#include "integrator.h"  // This is the parent for the three solvers
 #include "rk4.h"
 #include "ab2.h"
-#include "Euler.h"
+#include "euler.h"
 
-
-const int num_args = 7;   // Expected number of command line arguments
+const int num_args = 7;   // Define expected number of command line arguments
 
 // Function to print out values 
-void print_values(double t, double x, double dx)
+void print_values(double t, double x0, double x1)
 {
-    printf("%15.8f %15.8f %15.8f\n", t, x, dx);   // Prints time, x, dx
+    printf("%15.8f %15.8f %15.8f\n", t, x0, x1);   // Prints time, x, dx
 }
 
 
@@ -43,13 +42,15 @@ double* string2double_array(string input)
 
     // Pass vector numbers into an array
     int n = nums.size(); 
-    double* output = new double[n];
+    double* output = new double[n];     // Initialise an output array
 
-    for (int i = 0; i < n; i++) 
+    // Copy all vector values into respective array values 
+    for (int i = 0; i < n; i++)         
     {
         output[i] = nums[i];
     }
-    return output; 
+
+    return output;  // Return the array 
 }
 
 
@@ -73,8 +74,11 @@ int main(int argc, char *argv[])
     // What should we set our initial conditions to?
     string i_conds_str = argv[3];
     double* i_conds = string2double_array(i_conds_str); 
-    double t = i_conds[0];   // initial time for the system (used explicitly later on)
-    double* x = &i_conds[1]; // rest of initial state is the rest of the initial conditions array
+    double t = i_conds[0];    // initial time for the system (used explicitly later on)
+    double* x = new double[2];
+    x[0] = i_conds[1];  // rest of initial state is the rest of the initial conditions array
+    x[1] = i_conds[2];
+    
 
     // Which solver do we want?
     string solver = argv[4];   
@@ -86,20 +90,17 @@ int main(int argc, char *argv[])
     int tot_steps = stoi(argv[6]);   
 
     // Figure out what Model we want
-    Model system_model;
+    Model* system_model;
 
     // Define our model :)
     if (model == "ddo") system_model = new DDOscillator(mod_params);
     else if (model == "lv") system_model = new LotkaVolterra(mod_params);
 
-
-    // Figure out what integrator we want]
-    Integrator system_solver;  
-    if (solver == "Euler")    system_solver = new Euler(time_step, system_model); 
-    else if (solver == "ab2") system_solver = new AdamsBashforth2(time_step, system_model);
-    else if (solver == "rk4") system_solver = new RungeKutta4(time_step, system_model);
-
-
+    // Figure out what integrator we want
+    Integrator* system_solver;  
+    if (solver == "euler")    system_solver = new Euler(time_step, *system_model); 
+    else if (solver == "ab2") system_solver = new AdamsBashforth2(time_step, *system_model);
+    else if (solver == "rk4") system_solver = new RungeKutta4(time_step, *system_model);
 
     // Print initial conditions
     print_values(t, x[0], x[1]);
@@ -107,11 +108,12 @@ int main(int argc, char *argv[])
     // For each time step, solve the system and iterate
     for (int i = 0; i < tot_steps; i++)
     {
-        system_solver.Step(t, x);
+        system_solver->Step(t, x);
         t += time_step;
         print_values(t, x[0], x[1]);
     }
 
-    delete [] mod_params;
-    delete [] i_conds;
+    delete [] mod_params;       // Delete things we allocated memory for earlier 
+    delete [] i_conds;          // To avoid the memory leaks
+    delete [] x; 
 }
