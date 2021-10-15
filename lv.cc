@@ -29,6 +29,7 @@ LotkaVolterra::~LotkaVolterra() {}
 
 int LotkaVolterra::rhs(double t, const double *x, double *fx) const
 {
+  (void) t; // need t for constructor but don't need for LV system. 
   fx[0] = (alpha * x[0]) - (beta * x[0] * x[1]);
   fx[1] = (gamma * x[0] * x[1]) - (delta * x[1]);
   return 0;
