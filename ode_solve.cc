@@ -1,16 +1,24 @@
 // General driver code for a given choice of ODE (eg. ddo, LV2)
 // and a given choice of solver (Euler, ddo, ab2)
-// *** how to check and read in and parse command line inputs?
-// *** how to print in c++? LMAO :D 
 
-#include "ddo.h"
-#include "lv.h"
-#include "rk4.h"
+// Include some Standard Library things
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
 using namespace std;
+
+// Include the models header files
+#include "model.h"
+#include "ddo.h"
+#include "lv.h"
+
+// Include the solver header files
+#include "integrator.h"
+#include "rk4.h"
+#include "ab2.h"
+#include "Euler.h"
+
 
 const int num_args = 7;   // Expected number of command line arguments
 
@@ -41,7 +49,6 @@ double* string2double_array(string input)
     {
         output[i] = nums[i];
     }
-
     return output; 
 }
 
@@ -61,11 +68,13 @@ int main(int argc, char *argv[])
 
     // What should we set our model parameters to?
     string mod_params_str = argv[2];
-    double [] mod_params = string2double_array(mod_params_str); 
+    double* mod_params = string2double_array(mod_params_str); 
 
     // What should we set our initial conditions to?
     string i_conds_str = argv[3];
-    double [] i_conds = string2double_array(i_conds_str); 
+    double* i_conds = string2double_array(i_conds_str); 
+    double t = i_conds[0];   // initial time for the system (used explicitly later on)
+    double* x = &i_conds[1]; // rest of initial state is the rest of the initial conditions array
 
     // Which solver do we want?
     string solver = argv[4];   
@@ -76,12 +85,6 @@ int main(int argc, char *argv[])
     // How many time steps should we take?
     int tot_steps = stoi(argv[6]);   
 
-
-
-    // Print initial conditions
-    print_values(t, dx[0], dx[1]);
-
-
     // Figure out what Model we want
     Model system_model;
 
@@ -90,18 +93,23 @@ int main(int argc, char *argv[])
     else if (model == "lv") system_model = new LotkaVolterra(mod_params);
 
 
-    // Figure out what integrator we want
+    // Figure out what integrator we want]
     Integrator system_solver;  
     if (solver == "Euler")    system_solver = new Euler(time_step, system_model); 
     else if (solver == "ab2") system_solver = new AdamsBashforth2(time_step, system_model);
     else if (solver == "rk4") system_solver = new RungeKutta4(time_step, system_model);
 
 
+
+    // Print initial conditions
+    print_values(t, x[0], x[1]);
+
     // For each time step, solve the system and iterate
     for (int i = 0; i < tot_steps; i++)
     {
-      //  t += dt;
-        print_values(t, dx[0], dx[1]);
+        system_solver.Step(t, x);
+        t += time_step;
+        print_values(t, x[0], x[1]);
     }
 
     delete [] mod_params;
