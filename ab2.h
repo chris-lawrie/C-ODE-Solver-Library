@@ -1,11 +1,10 @@
-// Header file for the AdamsBashforth2 method. 
+// Header file for the AdamsBashforth2 method
 
 #ifndef AdamsBashforth2_H_
 #define AdamsBashforth2_H_
 
 #include "integrator.h"
-
-class Model;			// Forward declaration
+#include "model.h"
 
 class AdamsBashforth2 : public Integrator
 {
@@ -24,6 +23,7 @@ private:
 
   double *fx_;			// will point to temporary scratch
   double *fx_old;   // will point to temporary scratch
+  bool prev_exists; 
 };
 
 #endif  // AdamsBashforth2
