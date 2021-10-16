@@ -19,8 +19,8 @@ Integrator *IntegratorFactory::Create(string model, double time_step, const Mode
         system_solver = new AdamsBashforth2(time_step, system_model);
     else if (model == "rk4")
         system_solver = new RungeKutta4(time_step, system_model);
-    else
-        system_solver = NULL;
+    // else
+    //     system_solver = NULL;
 
-    return system_solver; 
+    return system_solver;
 }

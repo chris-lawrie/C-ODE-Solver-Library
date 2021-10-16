@@ -1,7 +1,7 @@
 CXX = g++
 DEPFLAGS = -E -MT $*.o -MMD -MP -MF $@
 CXXFLAGS = -g -Wall -Wextra -pedantic -std=c++17
-LDFLAGS = -lm
+LDFLAGS = -lm -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 
 integrators = euler rk4 ab2
 # ODEs are 'ddo' (Damped, Driven Oscillator) and 'lv' (Lotka-Volterra)
