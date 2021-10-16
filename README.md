@@ -7,7 +7,6 @@ First commit - just getting the wheels rolling :)
 This code allows the user to solve either a damped driven oscilator (DDO) or Lotka-Volterra (LV) system of equations. The user has a choice of three different solvers: Euler, Runge-Kutta and Adams-Bashforth. Additional details on the working for each of these methods can be found in sections below. The user is able to define the parameters for the model they choose (DDO or LV), as well as initial conditions for the system, the time step they wish to take, and the total number of steps they wish to take. The code then solves the system and prints out time, and each component of your state vector for each given time step. Examples of how to run the code, and expected outputs, can be found in sections below.
 
 
-
 Note that the Runge-Kutta method is intentionally left as slightly repetitional, to make it easier for the user to follow the algorithm's steps. As discussed in class, whilst there are neater ways to package the maths, it substantially abstracts the process and makes it harder to debug. 
 
 
@@ -91,12 +90,13 @@ Lotka-Volterra (lv)
 %------------------------------%
 %   The Different Solvers      %
 %------------------------------%
+As discussed earlier there are 3 (three) different solvers to choose from. Each of these methods implements a recursive system to numerically solve the ODE given to it. Each of these methods is written out below.
 
-Euler 
+Euler (euler.cc)
     x_(n+1) = x_n + f(x_n, t_n) * dt
 
 
-Runge-Kutta 4
+Runge-Kutta 4 (rk4.cc)
     K1 = f(x_n, t_n) * dt
     K2 = f(x_n + k1/2, t_n + dt/2) * dt
     K3 = f(x_n + k2/2, t_n + dt/2) * dt
@@ -104,7 +104,7 @@ Runge-Kutta 4
 
     x_(n+1) = x_n + (k1 + k4)/6 + (k2 + k3)/3
 
-Adams-Bashforth 2
+Adams-Bashforth 2 (ab2.cc)
     x_(n+1) = x_n + (3/2)*f(x_n, t_n)*dt - (1/2)*f(x_(n-1), t_(n-1))*dt
 
 

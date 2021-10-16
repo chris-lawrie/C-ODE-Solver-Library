@@ -67,6 +67,10 @@ int main(int argc, char *argv[])
         exit(99);
     }
 
+    //-------------------------------------------------------//
+    //---------------BEGIN PARSING USER INPUTS---------------//
+    //-------------------------------------------------------//
+
     // Which model do we want?
     string model = argv[1];
 
@@ -91,13 +95,24 @@ int main(int argc, char *argv[])
     // How many time steps should we take?
     int tot_steps = stoi(argv[6]);
 
+
+    //-------------------------------------------------------//
+    //---------------Define Model and System-----------------//
+    //-------------------------------------------------------//
+
     // Figure out what Model we want
     Model *system_model = ModelFactory::Create(model, mod_params);
     assert(system_model);
 
     // Figure out what integrator we want
-    Integrator *system_solver = IntegratorFactory::Create(solver, time_step, system_model*);
-    assert(system_model);
+    Integrator *system_solver = IntegratorFactory::Create(solver, time_step, *system_model);
+    assert(system_solver);
+
+
+
+    //-------------------------------------------------------//
+    //------------------------Solve--------------------------//
+    //-------------------------------------------------------//
 
     // Print initial conditions
     print_values(t, x[0], x[1]);
@@ -109,6 +124,8 @@ int main(int argc, char *argv[])
         t += time_step;
         print_values(t, x[0], x[1]);
     }
+
+
 
     delete[] mod_params; // Delete things we allocated memory for earlier
     delete[] i_conds;    // To avoid the memory leaks
