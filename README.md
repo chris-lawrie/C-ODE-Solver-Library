@@ -111,10 +111,8 @@ Adams-Bashforth 2 (ab2.cc)
 
 
 -----------------------------------
--- Misc C++ Notes just for Chris --
+--         Misc C++ Notes        --
 -----------------------------------
-
-C++ appears to be a solid mixture of C and Java. 
 
 'header file'
     - Declaration of what exists for a given class. 
