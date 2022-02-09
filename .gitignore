@@ -3,3 +3,4 @@
 *.o
 *.vscode
 *.sh
+*.DS_Store
