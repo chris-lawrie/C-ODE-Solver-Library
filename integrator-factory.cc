@@ -12,7 +12,7 @@ using namespace std;
 Integrator *IntegratorFactory::Create(string model, double time_step, const Model &system_model)
 
 {
-    Integrator *system_solver;
+    Integrator *system_solver = nullptr;
     if (model == "euler")
         system_solver = new Euler(time_step, system_model);
     else if (model == "ab2")

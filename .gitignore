@@ -1,3 +1,5 @@
 *.txt
 *.d
 *.o
+*.vscode
+*.sh
